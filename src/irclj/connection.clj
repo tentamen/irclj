@@ -4,7 +4,8 @@
             [irclj.events :as events])
   (:import java.net.Socket
            javax.net.ssl.SSLSocketFactory
-           java.io.IOException))
+           java.io.IOException
+           (irclj AllTrustSSLSocketFactory)))
 
 ;; We want to allow users to log raw input and output in whatever way
 ;; they please. To that, we'll fire the :raw-log callback function when
@@ -34,9 +35,10 @@
 (defn create-connection
   "Creates a socket from a host and a port. Returns a map
    of the socket and readers over its input and output."
-  [host port ssl?]
-  (let [socket (if ssl?
-                 (.createSocket (SSLSocketFactory/getDefault) host port)
+  [host port ssl? insecure?]
+  (let [socket (case [ssl? insecure?]
+                 [true true] (.createSocket (AllTrustSSLSocketFactory/getDefault) host port)
+                 [true false] (.createSocket (SSLSocketFactory/getDefault) host port)
                  (Socket. host port))]
     {:socket socket
      :in (io/reader socket)

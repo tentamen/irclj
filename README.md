@@ -9,7 +9,7 @@ is there.
 
 ## Usage
 
-https://clojars.org/irclj
+[![Clojars Project](https://img.shields.io/clojars/v/quan/irclj.svg)](https://clojars.org/quan/irclj)
 
 Note that this is still a work in progress. Some things may not work, or obvious things may be missing.
 Check out the issue tracker to see what needs to be done, and please contribute
@@ -18,18 +18,14 @@ if you can!
 ```clojure
 user=> (require '[irclj.core :as irc])
 nil
-user=> (def connection (irc/connect "irc.freenode.net" 6667 "hotbot" :callbacks {:privmsg (fn [irc type s] (prn irc type s))}))
-#'user/connection
-user=> (irc/join connection "#4clojure")
-nil
-user=> (irc/kill connection)
-nil
-user=> (def connection (irc/connect "irc.freenode.net" 6667 "hotbot" :callbacks {:privmsg (fn [irc type & s] (prn irc type s))}))
+user=> (def connection (irc/connect "irc.freenode.net" 6667 "hotbot" :callbacks {:privmsg (fn [_ args] (prn args))}))
 #'user/connection
 user=> (irc/join connection "#4clojure")
 nil
 ...say something in-channel...
 <buncha shit gets printed>
+user=> (irc/kill connection)
+nil
 ```
 
 Irclj is callback based, so you can register callbacks on any kind of IRC
